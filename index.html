@@ -133,26 +133,26 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 @media(max-width:700px){main{flex-direction:column}.sidebar-left{width:100%;max-height:180px}.canvas-area{flex-direction:column}}
 
 /* ---- Local Font Faces ---- */
-@font-face{font-family:'Raleway Black';src:url('/fonts/Raleway-Black.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Raleway Light';src:url('/fonts/Raleway-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Exo2 Bold';src:url('/fonts/Exo2-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Exo2 ExtraLight';src:url('/fonts/Exo2-ExtraLight.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Akrobat Black';src:url('/fonts/Akrobat-Black.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Akrobat Light';src:url('/fonts/Akrobat-Light.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Comfortaa Bold';src:url('/fonts/Comfortaa-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Comfortaa Light';src:url('/fonts/Comfortaa-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Roboto Condensed Bold';src:url('/fonts/Roboto-BoldCondensed.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Roboto Light';src:url('/fonts/Roboto-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Merriweather Bold';src:url('/fonts/Merriweather-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'YanoneKaffeesatz Bold';src:url('/fonts/YanoneKaffeesatz-Bold.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Forum';src:url('/fonts/Forum-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'YesevaOne';src:url('/fonts/YesevaOne-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'KellySlab';src:url('/fonts/KellySlab-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'BadScript';src:url('/fonts/BadScript.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Eggboom';src:url('/fonts/Eggboom-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Cuprum Bold';src:url('/fonts/Cuprum-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FiraMono Bold';src:url('/fonts/FiraMono-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'DidactGothic';src:url('/fonts/DidactGothic.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Raleway Black';src:url('fonts/Raleway-Black.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Raleway Light';src:url('fonts/Raleway-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Exo2 Bold';src:url('fonts/Exo2-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Exo2 ExtraLight';src:url('fonts/Exo2-ExtraLight.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Akrobat Black';src:url('fonts/Akrobat-Black.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Akrobat Light';src:url('fonts/Akrobat-Light.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Comfortaa Bold';src:url('fonts/Comfortaa-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Comfortaa Light';src:url('fonts/Comfortaa-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Roboto Condensed Bold';src:url('fonts/Roboto-BoldCondensed.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Roboto Light';src:url('fonts/Roboto-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Merriweather Bold';src:url('fonts/Merriweather-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'YanoneKaffeesatz Bold';src:url('fonts/YanoneKaffeesatz-Bold.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Forum';src:url('fonts/Forum-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'YesevaOne';src:url('fonts/YesevaOne-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'KellySlab';src:url('fonts/KellySlab-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'BadScript';src:url('fonts/BadScript.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Eggboom';src:url('fonts/Eggboom-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Cuprum Bold';src:url('fonts/Cuprum-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'FiraMono Bold';src:url('fonts/FiraMono-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'DidactGothic';src:url('fonts/DidactGothic.ttf') format('truetype');font-display:swap}
 </style>
 </head>
 <body>
@@ -284,7 +284,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;hei
 <script>
 // ==================== CONSTANTS ====================
 const CANVAS_W = 360, CANVAS_H = 480, EXPORT_MULT = 3;
-const GARMENT_IMAGES = { tee: '/images/tee.jpg', hoodie: '/images/hoodie.jpg' };
+const GARMENT_IMAGES = { tee: 'images/tee.jpg', hoodie: 'images/hoodie.jpg' };
 const PRINT_ZONES = {
   tee:    { x:88,  y:104, w:184, h:208 },
   hoodie: { x:80,  y:120, w:200, h:152 }
@@ -766,109 +766,75 @@ class DesignApp {
   // ---- Gallery ----
   _escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  _getLocalGallery() { try { return JSON.parse(localStorage.getItem('aaa_gallery')||'[]'); } catch(e) { return []; } }
+  _saveLocalGallery(items) { localStorage.setItem('aaa_gallery', JSON.stringify(items)); }
+
   async loadGallery() {
     const c = document.getElementById('galleryContent');
     c.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">加载中...</div>';
-    try {
-      const res = await fetch('/api/gallery');
-      const items = await res.json();
-      if (!items.length) {
-        c.innerHTML = '<div class="gallery-empty"><div class="ge-icon">&#127912;</div><p>还没有作品，成为第一个发布设计的人吧！</p></div>';
-        return;
-      }
-      let h = '<div class="gallery-grid">';
-      items.forEach(item => {
-        const canDelete = this._isAdmin || (item.uid && item.uid === this._uid);
-        const wants = item.wants || [];
-        const unwants = item.unwants || [];
-        const userWanted = wants.includes(this._uid);
-        const userUnwanted = unwants.includes(this._uid);
-        h += '<div class="gallery-card">';
-        h += '<img src="'+item.imageUrl+'" loading="lazy" onclick="document.getElementById(\'lightboxImg\').src=\''+item.imageUrl+'\';document.getElementById(\'lightbox\').classList.add(\'show\')">';
-        h += '<div class="gc-info">';
-        h += '<div class="gc-title">' + this._escHtml(item.title) + '</div>';
-        h += '<div class="gc-meta"><span>' + this._escHtml(item.author) + '</span><span>' + timeAgo(item.timestamp) + '</span></div>';
-        h += '<div class="gc-actions">';
-        h += '<button class="gc-vote want' + (userWanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'want\',this)">&#9829; 想要 <span>' + wants.length + '</span></button>';
-        h += '<button class="gc-vote unwant' + (userUnwanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'unwant\',this)">&#10007; 不想要 <span>' + unwants.length + '</span></button>';
-        if (canDelete) {
-          h += '<button class="gc-del" onclick="event.stopPropagation();app.deleteWork(\'' + item.id + '\')" title="删除">&#128465;</button>';
-        }
-        h += '</div></div></div>';
-      });
-      h += '</div>';
-      c.innerHTML = h;
-    } catch(e) {
-      c.innerHTML = '<div class="gallery-empty"><p>加载失败，请稍后重试</p></div>';
+    const items = this._getLocalGallery();
+    if (!items.length) {
+      c.innerHTML = '<div class="gallery-empty"><div class="ge-icon">&#127912;</div><p>还没有作品，成为第一个发布设计的人吧！</p></div>';
+      return;
     }
+    let h = '<div class="gallery-grid">';
+    items.forEach(item => {
+      const canDelete = this._isAdmin || (item.uid && item.uid === this._uid);
+      const wants = item.wants || [];
+      const unwants = item.unwants || [];
+      const userWanted = wants.includes(this._uid);
+      const userUnwanted = unwants.includes(this._uid);
+      h += '<div class="gallery-card">';
+      h += '<img src="'+item.imageUrl+'" loading="lazy" onclick="document.getElementById(\'lightboxImg\').src=\''+item.imageUrl+'\';document.getElementById(\'lightbox\').classList.add(\'show\')">';
+      h += '<div class="gc-info">';
+      h += '<div class="gc-title">' + this._escHtml(item.title) + '</div>';
+      h += '<div class="gc-meta"><span>' + this._escHtml(item.author) + '</span><span>' + timeAgo(item.timestamp) + '</span></div>';
+      h += '<div class="gc-actions">';
+      h += '<button class="gc-vote want' + (userWanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'want\',this)">&#9829; 想要 <span>' + wants.length + '</span></button>';
+      h += '<button class="gc-vote unwant' + (userUnwanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'unwant\',this)">&#10007; 不想要 <span>' + unwants.length + '</span></button>';
+      if (canDelete) {
+        h += '<button class="gc-del" onclick="event.stopPropagation();app.deleteWork(\'' + item.id + '\')" title="删除">&#128465;</button>';
+      }
+      h += '</div></div></div>';
+    });
+    h += '</div>';
+    c.innerHTML = h;
   }
 
   async vote(id, voteType, btn) {
-    // Optimistic UI update — instant response, no full reload
     const actions = btn.closest('.gc-actions');
     const wantBtn = actions.querySelector('.gc-vote.want');
     const unwantBtn = actions.querySelector('.gc-vote.unwant');
     const wantSpan = wantBtn.querySelector('span');
     const unwantSpan = unwantBtn.querySelector('span');
 
-    const wasWant = wantBtn.classList.contains('active');
-    const wasUnwant = unwantBtn.classList.contains('active');
+    const items = this._getLocalGallery();
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    const wants = item.wants || [];
+    const unwants = item.unwants || [];
+    const wasWant = wants.includes(this._uid);
+    const wasUnwant = unwants.includes(this._uid);
+    if (wasWant) wants.splice(wants.indexOf(this._uid), 1);
+    if (wasUnwant) unwants.splice(unwants.indexOf(this._uid), 1);
+    if (voteType === 'want' && !wasWant) wants.push(this._uid);
+    if (voteType === 'unwant' && !wasUnwant) unwants.push(this._uid);
+    item.wants = wants; item.unwants = unwants;
+    this._saveLocalGallery(items);
 
-    // Mirror server toggle logic locally
-    if (voteType === 'want') {
-      if (wasWant) {
-        wantBtn.classList.remove('active');
-        wantSpan.textContent = Math.max(0, +wantSpan.textContent - 1);
-      } else {
-        wantBtn.classList.add('active');
-        wantSpan.textContent = +wantSpan.textContent + 1;
-        if (wasUnwant) {
-          unwantBtn.classList.remove('active');
-          unwantSpan.textContent = Math.max(0, +unwantSpan.textContent - 1);
-        }
-      }
-    } else {
-      if (wasUnwant) {
-        unwantBtn.classList.remove('active');
-        unwantSpan.textContent = Math.max(0, +unwantSpan.textContent - 1);
-      } else {
-        unwantBtn.classList.add('active');
-        unwantSpan.textContent = +unwantSpan.textContent + 1;
-        if (wasWant) {
-          wantBtn.classList.remove('active');
-          wantSpan.textContent = Math.max(0, +wantSpan.textContent - 1);
-        }
-      }
-    }
-
-    // Send to server in background, sync real counts
-    try {
-      const res = await fetch('/api/vote', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ id, uid: this._uid, vote: voteType })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        // Sync with real cumulative server counts
-        wantSpan.textContent = data.wants;
-        unwantSpan.textContent = data.unwants;
-      }
-    } catch(e) { /* optimistic update stays, will sync on next gallery load */ }
+    wantBtn.classList.toggle('active', wants.includes(this._uid));
+    unwantBtn.classList.toggle('active', unwants.includes(this._uid));
+    wantSpan.textContent = wants.length;
+    unwantSpan.textContent = unwants.length;
   }
 
   async deleteWork(id) {
     if (!confirm('确定删除这件作品？')) return;
-    try {
-      const res = await fetch('/api/delete', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ id, uid: this._uid, admin: this._isAdmin })
-      });
-      const data = await res.json();
-      if (data.ok) { this.toast('作品已删除'); this.loadGallery(); }
-      else this.toast(data.error || '删除失败');
-    } catch(e) { this.toast('网络错误'); }
+    let items = this._getLocalGallery();
+    items = items.filter(i => i.id !== id);
+    this._saveLocalGallery(items);
+    this.toast('作品已删除');
+    this.loadGallery();
   }
 
   // ---- Publish ----
@@ -890,15 +856,13 @@ class DesignApp {
     const author = document.getElementById('pubAuthor').value.trim()||'匿名设计师';
     if (!this._publishDataUrl) return;
     localStorage.setItem('aaa_author', author);
-    try {
-      const res = await fetch('/api/publish', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ image:this._publishDataUrl, title, author, uid:this._uid, product:this.currentProduct, color:this.garmentColor.hex })
-      });
-      const data = await res.json();
-      if (data.ok) { this.toast('作品发布成功！'); this.cancelPublish(); document.getElementById('pubTitle').value=''; }
-      else this.toast('发布失败');
-    } catch(e) { this.toast('网络错误，请重试'); }
+    const did = Math.random().toString(36).substr(2, 8);
+    const items = this._getLocalGallery();
+    items.unshift({ id: did, title, author, uid: this._uid, product: this.currentProduct, color: this.garmentColor.hex, timestamp: Date.now()/1000, wants: [], unwants: [], imageUrl: this._publishDataUrl });
+    this._saveLocalGallery(items);
+    this.toast('作品发布成功！');
+    this.cancelPublish();
+    document.getElementById('pubTitle').value='';
   }
 
   // ---- Mockup generation (combines front + back) ----
