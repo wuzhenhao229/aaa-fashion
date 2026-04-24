@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&family=Liu+Jian+Mao+Cao&family=ZCOOL+QingKe+HuangYou&family=Zhi+Mang+Xing&family=Long+Cang&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 /* ===== DARK PREMIUM THEME ===== */
-:root{--bg:#0c0c0e;--card:#161618;--card2:#1e1e21;--border:rgba(255,255,255,0.07);--text:#eaeaec;--text2:#6b6b73;--accent:#4f8fff;--accent-light:rgba(79,143,255,0.1);--danger:#ff5252;--success:#34d399;--shadow:0 2px 8px rgba(0,0,0,.4);--shadow-lg:0 8px 30px rgba(0,0,0,.6);--radius:8px}
+:root{--bg:#0c0c0e;--card:#161618;--card2:#1e1e21;--border:rgba(255,255,255,0.07);--text:#eaeaec;--text2:#7d7d85;--accent:#3b82f6;--accent-light:rgba(59,130,246,0.12);--danger:#ff4757;--success:#00e676;--warn:#ffab00;--shadow:0 2px 8px rgba(0,0,0,.4);--shadow-lg:0 8px 30px rgba(0,0,0,.6);--radius:8px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
@@ -33,12 +33,12 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:8px 
 .header-actions{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
 .header-actions button{padding:6px 14px;border:1px solid var(--border);background:transparent;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .2s;font-weight:500;font-family:inherit}
 .header-actions button:hover{border-color:var(--text2);color:var(--text)}
-.btn-primary{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
-.btn-primary:hover{background:#3b7bef!important}
-.btn-danger{color:var(--danger)!important}
-.btn-danger:hover{border-color:var(--danger)!important}
-.btn-publish{background:var(--success)!important;color:#0c0c0e!important;border-color:var(--success)!important;font-weight:600!important}
-.btn-publish:hover{background:#2bc48a!important}
+.btn-primary{background:#3b82f6!important;color:#fff!important;border-color:#3b82f6!important}
+.btn-primary:hover{background:#2563eb!important}
+.btn-danger{color:#ff4757!important;border-color:rgba(255,71,87,0.3)!important}
+.btn-danger:hover{background:rgba(255,71,87,0.1)!important;border-color:#ff4757!important}
+.btn-publish{background:#00e676!important;color:#0c0c0e!important;border-color:#00e676!important;font-weight:700!important}
+.btn-publish:hover{background:#00c853!important}
 
 /* ===== LAYOUT ===== */
 main{flex:1;display:flex;overflow:hidden}
@@ -76,8 +76,8 @@ main{flex:1;display:flex;overflow:hidden}
 /* ===== CANVAS AREA ===== */
 .canvas-area{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:16px;overflow:auto;gap:18px}
 .canvas-col{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
-.col-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:2px;text-transform:uppercase;transition:color .2s;user-select:none}
-.canvas-col.active .col-label{color:var(--accent)}
+.col-label{font-size:15px;font-weight:700;color:var(--text2);letter-spacing:3px;text-transform:uppercase;transition:color .2s;user-select:none}
+.canvas-col.active .col-label{color:#fff}
 .canvas-wrapper{position:relative;width:360px;height:480px;border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;flex-shrink:0;outline:2px solid transparent;outline-offset:3px;transition:outline-color .3s}
 .canvas-col.active .canvas-wrapper{outline-color:var(--accent)}
 .garment-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -152,45 +152,45 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;hei
 @media(max-width:700px){main{flex-direction:column}.sidebar-left{width:100%;max-height:180px}.canvas-area{flex-direction:column}}
 
 /* ===== LOCAL FONT FACES — Original ===== */
-@font-face{font-family:'Raleway Black';src:url('fonts/Raleway-Black.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Raleway Light';src:url('fonts/Raleway-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Exo2 Bold';src:url('fonts/Exo2-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Exo2 ExtraLight';src:url('fonts/Exo2-ExtraLight.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Akrobat Black';src:url('fonts/Akrobat-Black.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Akrobat Light';src:url('fonts/Akrobat-Light.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Comfortaa Bold';src:url('fonts/Comfortaa-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Comfortaa Light';src:url('fonts/Comfortaa-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Roboto Condensed Bold';src:url('fonts/Roboto-BoldCondensed.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Roboto Light';src:url('fonts/Roboto-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Merriweather Bold';src:url('fonts/Merriweather-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'YanoneKaffeesatz Bold';src:url('fonts/YanoneKaffeesatz-Bold.otf') format('opentype');font-display:swap}
-@font-face{font-family:'Forum';src:url('fonts/Forum-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'YesevaOne';src:url('fonts/YesevaOne-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'KellySlab';src:url('fonts/KellySlab-Regular.otf') format('opentype');font-display:swap}
-@font-face{font-family:'BadScript';src:url('fonts/BadScript.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Eggboom';src:url('fonts/Eggboom-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Cuprum Bold';src:url('fonts/Cuprum-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FiraMono Bold';src:url('fonts/FiraMono-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'DidactGothic';src:url('fonts/DidactGothic.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Raleway Black';src:url('fonts/Raleway-Black.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Raleway Light';src:url('fonts/Raleway-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Exo2 Bold';src:url('fonts/Exo2-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Exo2 ExtraLight';src:url('fonts/Exo2-ExtraLight.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Akrobat Black';src:url('fonts/Akrobat-Black.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Akrobat Light';src:url('fonts/Akrobat-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Comfortaa Bold';src:url('fonts/Comfortaa-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Comfortaa Light';src:url('fonts/Comfortaa-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Roboto Condensed Bold';src:url('fonts/Roboto-BoldCondensed.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Roboto Light';src:url('fonts/Roboto-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Merriweather Bold';src:url('fonts/Merriweather-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'YanoneKaffeesatz Bold';src:url('fonts/YanoneKaffeesatz-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Forum';src:url('fonts/Forum-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'YesevaOne';src:url('fonts/YesevaOne-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'KellySlab';src:url('fonts/KellySlab-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'BadScript';src:url('fonts/BadScript.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Eggboom';src:url('fonts/Eggboom-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Cuprum Bold';src:url('fonts/Cuprum-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'FiraMono Bold';src:url('fonts/FiraMono-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'DidactGothic';src:url('fonts/DidactGothic.woff2') format('woff2');font-display:swap}
 /* ===== LOCAL FONT FACES — New Chinese ===== */
-@font-face{font-family:'AlibabaPuHuiTi Bold';src:url('fonts/AlibabaPuHuiTi-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'AlibabaPuHuiTi Black';src:url('fonts/AlibabaPuHuiTi-Black.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'AlibabaPuHuiTi Light';src:url('fonts/AlibabaPuHuiTi-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FZJiangYi Bold';src:url('fonts/FZJiangYi-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FZJiangYi Regular';src:url('fonts/FZJiangYi-Regular.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FZJunHei Bold';src:url('fonts/FZJunHei-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'FZJunHei Light';src:url('fonts/FZJunHei-Light.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'HuaKangHei Bold';src:url('fonts/HuaKangHei-Bold.otf') format('opentype');font-display:swap}
-@font-face{font-family:'HuaKangHei Light';src:url('fonts/HuaKangHei-Light.otf') format('opentype');font-display:swap}
-@font-face{font-family:'RuiZiYaoGun';src:url('fonts/RuiZiYaoGun-Black.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'ZZGFXingHei';src:url('fonts/ZZGFXingHei-Bold.otf') format('opentype');font-display:swap}
-@font-face{font-family:'MFChanYing';src:url('fonts/MFChanYing.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'MFShuTiao';src:url('fonts/MFShuTiao.otf') format('opentype');font-display:swap}
+@font-face{font-family:'AlibabaPuHuiTi Bold';src:url('fonts/AlibabaPuHuiTi-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'AlibabaPuHuiTi Black';src:url('fonts/AlibabaPuHuiTi-Black.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'AlibabaPuHuiTi Light';src:url('fonts/AlibabaPuHuiTi-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'FZJiangYi Bold';src:url('fonts/FZJiangYi-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'FZJiangYi Regular';src:url('fonts/FZJiangYi-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'FZJunHei Bold';src:url('fonts/FZJunHei-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'FZJunHei Light';src:url('fonts/FZJunHei-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'HuaKangHei Bold';src:url('fonts/HuaKangHei-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'HuaKangHei Light';src:url('fonts/HuaKangHei-Light.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'RuiZiYaoGun';src:url('fonts/RuiZiYaoGun-Black.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'ZZGFXingHei';src:url('fonts/ZZGFXingHei-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'MFChanYing';src:url('fonts/MFChanYing.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'MFShuTiao';src:url('fonts/MFShuTiao.woff2') format('woff2');font-display:swap}
 /* ===== LOCAL FONT FACES — New English ===== */
-@font-face{font-family:'Economica Bold';src:url('fonts/Economica-Bold.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Economica';src:url('fonts/Economica-Regular.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'Enma';src:url('fonts/Enma.otf') format('opentype');font-display:swap}
-@font-face{font-family:'IstokWeb Bold';src:url('fonts/IstokWeb-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Economica Bold';src:url('fonts/Economica-Bold.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Economica';src:url('fonts/Economica-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Enma';src:url('fonts/Enma.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'IstokWeb Bold';src:url('fonts/IstokWeb-Bold.woff2') format('woff2');font-display:swap}
 </style>
 </head>
 <body>
