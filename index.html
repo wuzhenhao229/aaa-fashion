@@ -333,7 +333,7 @@ const PRINT_ZONES = {
 };
 
 const GARMENT_COLORS = [
-  {name:'白色',hex:'#FFFFFF'},{name:'黑色',hex:'#2a2a2a'},{name:'烟灰',hex:'#7a7a7a'},
+  {name:'黑色',hex:'#2a2a2a'},{name:'白色',hex:'#FFFFFF'},{name:'烟灰',hex:'#7a7a7a'},
   {name:'藏青',hex:'#2c3e6b'},{name:'红色',hex:'#c0392b'},{name:'酒红',hex:'#8b2252'},
   {name:'军绿',hex:'#4a5e3a'},{name:'粉色',hex:'#e8a0b4'},{name:'杏色',hex:'#e8cdb0'},
   {name:'紫色',hex:'#6c5b8a'},{name:'天蓝',hex:'#6ba3c9'},{name:'明黄',hex:'#f0c040'},
@@ -422,9 +422,16 @@ function preloadGarmentImages() {
   return Promise.all(promises);
 }
 
+/**
+ * Tint garment: works for both light AND dark base garments.
+ * Strategy: the garment pixels (dark, L<80) get replaced with target color
+ * adjusted by their original luminance ratio to preserve fabric texture.
+ * Background (light, L>220) stays untouched. Edge zone blends smoothly.
+ */
 function tintCanvas(ctx, img, w, h, hex) {
   ctx.drawImage(img, 0, 0, w, h);
-  if (hex === '#FFFFFF') return;
+  // For black garment, #2a2a2a is "natural" — skip tinting
+  if (hex === '#2a2a2a') return;
   const id = ctx.getImageData(0, 0, w, h);
   const d = id.data;
   const cr = parseInt(hex.slice(1,3),16);
@@ -432,12 +439,26 @@ function tintCanvas(ctx, img, w, h, hex) {
   const cb = parseInt(hex.slice(5,7),16);
   for (let i = 0; i < d.length; i += 4) {
     const L = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
-    if (L > 245) {
-      d[i]=cr; d[i+1]=cg; d[i+2]=cb;
-    } else if (L > 230) {
-      const t = (L - 230) / 15;
-      d[i]=(d[i]*(1-t)+cr*t)|0; d[i+1]=(d[i+1]*(1-t)+cg*t)|0; d[i+2]=(d[i+2]*(1-t)+cb*t)|0;
+    if (L < 80) {
+      // Garment body: apply target color, scale by luminance ratio to keep texture
+      // L/40 gives subtle shading (original L~23 → ratio ~0.58, keeps depth)
+      const shade = Math.min(L / 50, 1.0);
+      d[i]   = (cr * shade)|0;
+      d[i+1] = (cg * shade)|0;
+      d[i+2] = (cb * shade)|0;
+      // For white: make it truly white
+      if (hex === '#FFFFFF') { d[i] = d[i+1] = d[i+2] = Math.max(200, (L/80*255)|0); }
+    } else if (L < 120) {
+      // Edge transition zone: blend from tinted to original
+      const t = (L - 80) / 40; // 0=garment, 1=near-bg
+      const shade = Math.min(L / 50, 1.0);
+      let tr = (cr * shade)|0, tg = (cg * shade)|0, tb = (cb * shade)|0;
+      if (hex === '#FFFFFF') { tr = tg = tb = Math.max(200, (L/80*255)|0); }
+      d[i]   = (tr*(1-t) + d[i]*t)|0;
+      d[i+1] = (tg*(1-t) + d[i+1]*t)|0;
+      d[i+2] = (tb*(1-t) + d[i+2]*t)|0;
     }
+    // L >= 120: background, leave untouched
   }
   ctx.putImageData(id, 0, 0);
 }
