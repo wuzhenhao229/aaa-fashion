@@ -101,6 +101,8 @@ main{flex:1;display:flex;overflow:hidden}
 /* ===== SELECTION TOOLS ===== */
 #selectionTools{display:none}
 #textTools{display:none}
+#imageTools{display:none}
+.crop-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:3;pointer-events:none}
 input[type="range"]{width:100%;height:3px;-webkit-appearance:none;background:#333;border-radius:2px;outline:none}
 input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--accent);border-radius:50%;cursor:pointer}
 
@@ -257,6 +259,55 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;hei
           <p style="font-size:10px;color:var(--text2);margin-top:3px">支持 PNG / JPG / SVG</p>
         </div>
         <div class="tool-section"><h3>快捷模板</h3><div class="template-grid" id="templateGrid"></div></div>
+
+        <!-- Image tools: shown when image is selected -->
+        <div class="tool-section" id="imageTools" style="display:none">
+          <h3>图片处理</h3>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px">
+            <button class="tool-btn tool-btn-sm" onclick="app.flipImage('x')" title="水平翻转">↔ 翻转</button>
+            <button class="tool-btn tool-btn-sm" onclick="app.flipImage('y')" title="垂直翻转">↕ 翻转</button>
+            <button class="tool-btn tool-btn-sm" onclick="app.rotateImage(-90)" title="逆时针90°">↺ 90°</button>
+            <button class="tool-btn tool-btn-sm" onclick="app.rotateImage(90)" title="顺时针90°">↻ 90°</button>
+          </div>
+          <button class="tool-btn" onclick="app.startCrop()" id="btnCrop" style="margin-bottom:5px">裁剪图片</button>
+          <button class="tool-btn btn-primary" onclick="app.applyCrop()" id="btnCropApply" style="display:none;margin-bottom:5px">确认裁剪</button>
+          <button class="tool-btn" onclick="app.cancelCrop()" id="btnCropCancel" style="display:none;margin-bottom:5px">取消裁剪</button>
+          <div class="tool-row"><label>阴影</label>
+            <input type="range" id="shadowBlur" min="0" max="30" value="0" style="flex:1">
+            <span id="shadowBlurVal" style="font-size:11px;color:var(--text2);min-width:20px;text-align:right">0</span>
+          </div>
+          <div class="tool-row"><label>偏移X</label>
+            <input type="range" id="shadowOffX" min="-20" max="20" value="3" style="flex:1">
+            <span id="shadowOffXVal" style="font-size:11px;color:var(--text2);min-width:20px;text-align:right">3</span>
+          </div>
+          <div class="tool-row"><label>偏移Y</label>
+            <input type="range" id="shadowOffY" min="-20" max="20" value="3" style="flex:1">
+            <span id="shadowOffYVal" style="font-size:11px;color:var(--text2);min-width:20px;text-align:right">3</span>
+          </div>
+          <div class="tool-row"><label>阴影色</label>
+            <input type="color" id="shadowColor" value="#000000" style="width:28px;height:24px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:var(--card2)">
+          </div>
+          <h3 style="margin-top:8px">滤镜</h3>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:5px">
+            <button class="tool-btn tool-btn-sm" id="fGray" onclick="app.toggleFilter('grayscale')">灰度</button>
+            <button class="tool-btn tool-btn-sm" id="fSepia" onclick="app.toggleFilter('sepia')">复古</button>
+            <button class="tool-btn tool-btn-sm" id="fInvert" onclick="app.toggleFilter('invert')">反色</button>
+          </div>
+          <div class="tool-row"><label>亮度</label>
+            <input type="range" id="fBrightness" min="-100" max="100" value="0" style="flex:1">
+            <span id="fBrightnessVal" style="font-size:11px;color:var(--text2);min-width:26px;text-align:right">0</span>
+          </div>
+          <div class="tool-row"><label>对比</label>
+            <input type="range" id="fContrast" min="-100" max="100" value="0" style="flex:1">
+            <span id="fContrastVal" style="font-size:11px;color:var(--text2);min-width:26px;text-align:right">0</span>
+          </div>
+          <div class="tool-row"><label>模糊</label>
+            <input type="range" id="fBlur" min="0" max="100" value="0" style="flex:1">
+            <span id="fBlurVal" style="font-size:11px;color:var(--text2);min-width:26px;text-align:right">0</span>
+          </div>
+          <button class="tool-btn" onclick="app.resetFilters()" style="margin-top:4px">重置滤镜</button>
+        </div>
+
         <div class="tool-section" id="selectionTools">
           <h3>选中对象</h3>
           <div class="tool-row"><label>透明</label>
@@ -702,14 +753,28 @@ class DesignApp {
       reader.readAsDataURL(file); e.target.value='';
     });
     this.buildTemplates();
+    // Image tools events
+    this._setupImageTools();
     // Keyboard
     document.addEventListener('keydown', e => {
       if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
-      // Allow Delete/Backspace only when NOT editing text
       const ao = this.canvas.getActiveObject();
       if (ao && ao.type === 'i-text' && ao.isEditing) return;
       if ((e.key==='Delete'||e.key==='Backspace') && ao) { this.deleteSelected(); e.preventDefault(); }
       if (e.key==='d' && (e.metaKey||e.ctrlKey)) { this.duplicateSelected(); e.preventDefault(); }
+      // Copy / Paste
+      if (e.key==='c' && (e.metaKey||e.ctrlKey) && ao) { this._clipboard = ao; e.preventDefault(); }
+      if (e.key==='v' && (e.metaKey||e.ctrlKey) && this._clipboard) {
+        this._clipboard.clone(cloned => {
+          cloned.set({ left: cloned.left+20, top: cloned.top+20 });
+          this.canvas.add(cloned);
+          this.canvas.setActiveObject(cloned);
+          this.canvas.renderAll();
+          this.updateLayers();
+          this.toast('已粘贴');
+        });
+        e.preventDefault();
+      }
     });
   }
 
@@ -721,22 +786,29 @@ class DesignApp {
     document.getElementById('opacityVal').textContent = Math.round((obj.opacity||1)*100)+'%';
     if (obj.type==='i-text') {
       document.getElementById('textTools').style.display = 'block';
+      document.getElementById('imageTools').style.display = 'none';
       document.getElementById('fontSizeRange').value = obj.fontSize||36;
       document.getElementById('fontSizeVal').textContent = obj.fontSize||36;
       document.getElementById('textColor').value = obj.fill||'#FFFFFF';
       document.getElementById('textColorHex').value = obj.fill||'#FFFFFF';
       this.updateAlignUI(obj.textAlign||'center');
-      // Try to find font index
       const fi = FONTS.findIndex(f => f.name === obj.fontFamily);
       if (fi >= 0) document.getElementById('fontSelect').value = fi;
+    } else if (obj.type==='image') {
+      document.getElementById('textTools').style.display = 'none';
+      document.getElementById('imageTools').style.display = 'block';
+      this._syncImageToolsUI(obj);
     } else {
       document.getElementById('textTools').style.display = 'none';
+      document.getElementById('imageTools').style.display = 'none';
     }
   }
 
   onDeselect() {
     document.getElementById('selectionTools').style.display = 'none';
     document.getElementById('textTools').style.display = 'none';
+    document.getElementById('imageTools').style.display = 'none';
+    if (this._cropping) this.cancelCrop();
   }
 
   buildTemplates() {
@@ -783,6 +855,222 @@ class DesignApp {
     document.getElementById('btnAlignLeft').classList.toggle('active', align==='left');
     document.getElementById('btnAlignCenter').classList.toggle('active', align==='center');
     document.getElementById('btnAlignRight').classList.toggle('active', align==='right');
+  }
+
+  // ---- Image Tools Setup ----
+  _setupImageTools() {
+    // Shadow controls
+    const sb = document.getElementById('shadowBlur'), sbv = document.getElementById('shadowBlurVal');
+    const sx = document.getElementById('shadowOffX'), sxv = document.getElementById('shadowOffXVal');
+    const sy = document.getElementById('shadowOffY'), syv = document.getElementById('shadowOffYVal');
+    const sc = document.getElementById('shadowColor');
+    const updateShadow = () => {
+      const obj = this.canvas.getActiveObject();
+      if (!obj || obj.type !== 'image') return;
+      sbv.textContent = sb.value; sxv.textContent = sx.value; syv.textContent = sy.value;
+      if (+sb.value === 0) { obj.shadow = null; }
+      else {
+        obj.shadow = new fabric.Shadow({
+          color: sc.value + '99', blur: +sb.value, offsetX: +sx.value, offsetY: +sy.value
+        });
+      }
+      this.canvas.renderAll();
+    };
+    sb.addEventListener('input', updateShadow);
+    sx.addEventListener('input', updateShadow);
+    sy.addEventListener('input', updateShadow);
+    sc.addEventListener('input', updateShadow);
+    // Filter sliders
+    const fBr = document.getElementById('fBrightness'), fBrV = document.getElementById('fBrightnessVal');
+    const fCo = document.getElementById('fContrast'), fCoV = document.getElementById('fContrastVal');
+    const fBl = document.getElementById('fBlur'), fBlV = document.getElementById('fBlurVal');
+    fBr.addEventListener('input', () => { fBrV.textContent = fBr.value; this._applyFilters(); });
+    fCo.addEventListener('input', () => { fCoV.textContent = fCo.value; this._applyFilters(); });
+    fBl.addEventListener('input', () => { fBlV.textContent = fBl.value; this._applyFilters(); });
+  }
+
+  _syncImageToolsUI(obj) {
+    // Shadow
+    const sh = obj.shadow;
+    document.getElementById('shadowBlur').value = sh ? sh.blur : 0;
+    document.getElementById('shadowBlurVal').textContent = sh ? sh.blur : 0;
+    document.getElementById('shadowOffX').value = sh ? sh.offsetX : 3;
+    document.getElementById('shadowOffXVal').textContent = sh ? sh.offsetX : 3;
+    document.getElementById('shadowOffY').value = sh ? sh.offsetY : 3;
+    document.getElementById('shadowOffYVal').textContent = sh ? sh.offsetY : 3;
+    // Filters state
+    const f = obj.filters || [];
+    document.getElementById('fGray').classList.toggle('active', f.some(x => x.type === 'Grayscale'));
+    document.getElementById('fSepia').classList.toggle('active', f.some(x => x.type === 'Sepia'));
+    document.getElementById('fInvert').classList.toggle('active', f.some(x => x.type === 'Invert'));
+    const brF = f.find(x => x.type === 'Brightness');
+    const coF = f.find(x => x.type === 'Contrast');
+    const blF = f.find(x => x.type === 'Blur');
+    document.getElementById('fBrightness').value = brF ? Math.round(brF.brightness * 100) : 0;
+    document.getElementById('fBrightnessVal').textContent = brF ? Math.round(brF.brightness * 100) : 0;
+    document.getElementById('fContrast').value = coF ? Math.round(coF.contrast * 100) : 0;
+    document.getElementById('fContrastVal').textContent = coF ? Math.round(coF.contrast * 100) : 0;
+    document.getElementById('fBlur').value = blF ? Math.round(blF.blur * 100) : 0;
+    document.getElementById('fBlurVal').textContent = blF ? Math.round(blF.blur * 100) : 0;
+    // Crop button state
+    document.getElementById('btnCrop').style.display = '';
+    document.getElementById('btnCropApply').style.display = 'none';
+    document.getElementById('btnCropCancel').style.display = 'none';
+  }
+
+  // ---- Flip / Rotate ----
+  flipImage(axis) {
+    const obj = this.canvas.getActiveObject();
+    if (!obj) return;
+    if (axis === 'x') obj.set('flipX', !obj.flipX);
+    else obj.set('flipY', !obj.flipY);
+    this.canvas.renderAll();
+  }
+
+  rotateImage(deg) {
+    const obj = this.canvas.getActiveObject();
+    if (!obj) return;
+    obj.rotate((obj.angle || 0) + deg);
+    this.canvas.renderAll();
+  }
+
+  // ---- Crop ----
+  startCrop() {
+    const obj = this.canvas.getActiveObject();
+    if (!obj || obj.type !== 'image') return;
+    this._cropping = true;
+    this._cropTarget = obj;
+    // Create a crop rectangle
+    const bound = obj.getBoundingRect();
+    this._cropRect = new fabric.Rect({
+      left: bound.left + bound.width * 0.15,
+      top: bound.top + bound.height * 0.15,
+      width: bound.width * 0.7,
+      height: bound.height * 0.7,
+      fill: 'rgba(79,143,255,0.12)',
+      stroke: '#4f8fff',
+      strokeWidth: 2,
+      strokeDashArray: [5, 3],
+      cornerColor: '#4f8fff',
+      cornerStrokeColor: '#fff',
+      cornerSize: 10,
+      transparentCorners: false,
+      hasRotatingPoint: false,
+      lockRotation: true,
+      excludeFromExport: true,
+    });
+    this.canvas.add(this._cropRect);
+    this.canvas.setActiveObject(this._cropRect);
+    this.canvas.renderAll();
+    document.getElementById('btnCrop').style.display = 'none';
+    document.getElementById('btnCropApply').style.display = '';
+    document.getElementById('btnCropCancel').style.display = '';
+    this.toast('拖动蓝色框选择裁剪区域，然后点确认');
+  }
+
+  applyCrop() {
+    if (!this._cropping || !this._cropRect || !this._cropTarget) return;
+    const rect = this._cropRect;
+    const img = this._cropTarget;
+    // Get crop rect coords relative to the image
+    const imgMat = img.calcTransformMatrix();
+    const invMat = fabric.util.invertTransform(imgMat);
+    // Crop rect corners in canvas coords
+    const tl = { x: rect.left, y: rect.top };
+    const br = { x: rect.left + rect.width * rect.scaleX, y: rect.top + rect.height * rect.scaleY };
+    // Transform to image local coords
+    const localTL = fabric.util.transformPoint(tl, invMat);
+    const localBR = fabric.util.transformPoint(br, invMat);
+    // Calculate crop in image original pixel space
+    const imgW = img.width, imgH = img.height;
+    const cx = Math.max(0, (localTL.x + imgW/2));
+    const cy = Math.max(0, (localTL.y + imgH/2));
+    const cw = Math.min(imgW, (localBR.x + imgW/2)) - cx;
+    const ch = Math.min(imgH, (localBR.y + imgH/2)) - cy;
+    if (cw < 5 || ch < 5) { this.toast('裁剪区域太小'); this.cancelCrop(); return; }
+    // Apply clipPath
+    img.clipPath = new fabric.Rect({
+      left: -imgW/2 + cx,
+      top: -imgH/2 + cy,
+      width: cw,
+      height: ch,
+      absolutePositioned: false,
+    });
+    // Remove crop rect
+    this.canvas.remove(rect);
+    this._cropping = false;
+    this._cropRect = null;
+    this._cropTarget = null;
+    this.canvas.setActiveObject(img);
+    this.canvas.renderAll();
+    this.updateLayers();
+    document.getElementById('btnCrop').style.display = '';
+    document.getElementById('btnCropApply').style.display = 'none';
+    document.getElementById('btnCropCancel').style.display = 'none';
+    this.toast('裁剪完成');
+  }
+
+  cancelCrop() {
+    if (this._cropRect) this.canvas.remove(this._cropRect);
+    this._cropping = false;
+    this._cropRect = null;
+    this._cropTarget = null;
+    this.canvas.renderAll();
+    document.getElementById('btnCrop').style.display = '';
+    document.getElementById('btnCropApply').style.display = 'none';
+    document.getElementById('btnCropCancel').style.display = 'none';
+  }
+
+  // ---- Filters ----
+  toggleFilter(type) {
+    const obj = this.canvas.getActiveObject();
+    if (!obj || obj.type !== 'image') return;
+    if (!obj.filters) obj.filters = [];
+    const typeMap = { grayscale: 'Grayscale', sepia: 'Sepia', invert: 'Invert' };
+    const fabType = typeMap[type];
+    const idx = obj.filters.findIndex(f => f.type === fabType);
+    if (idx >= 0) {
+      obj.filters.splice(idx, 1);
+      document.getElementById({ grayscale:'fGray', sepia:'fSepia', invert:'fInvert' }[type]).classList.remove('active');
+    } else {
+      const filterClasses = {
+        Grayscale: new fabric.Image.filters.Grayscale(),
+        Sepia: new fabric.Image.filters.Sepia(),
+        Invert: new fabric.Image.filters.Invert(),
+      };
+      obj.filters.push(filterClasses[fabType]);
+      document.getElementById({ grayscale:'fGray', sepia:'fSepia', invert:'fInvert' }[type]).classList.add('active');
+    }
+    obj.applyFilters();
+    this.canvas.renderAll();
+  }
+
+  _applyFilters() {
+    const obj = this.canvas.getActiveObject();
+    if (!obj || obj.type !== 'image') return;
+    if (!obj.filters) obj.filters = [];
+    // Remove existing brightness/contrast/blur
+    obj.filters = obj.filters.filter(f => !['Brightness','Contrast','Blur'].includes(f.type));
+    const br = +document.getElementById('fBrightness').value / 100;
+    const co = +document.getElementById('fContrast').value / 100;
+    const bl = +document.getElementById('fBlur').value / 100;
+    if (br !== 0) obj.filters.push(new fabric.Image.filters.Brightness({ brightness: br }));
+    if (co !== 0) obj.filters.push(new fabric.Image.filters.Contrast({ contrast: co }));
+    if (bl > 0) obj.filters.push(new fabric.Image.filters.Blur({ blur: bl }));
+    obj.applyFilters();
+    this.canvas.renderAll();
+  }
+
+  resetFilters() {
+    const obj = this.canvas.getActiveObject();
+    if (!obj || obj.type !== 'image') return;
+    obj.filters = [];
+    obj.applyFilters();
+    obj.shadow = null;
+    obj.clipPath = null;
+    this.canvas.renderAll();
+    this._syncImageToolsUI(obj);
+    this.toast('已重置');
   }
 
   // ---- Object ops ----
