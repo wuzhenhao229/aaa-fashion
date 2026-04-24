@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAA服装厂 - 服饰定制设计工具</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+<link rel="dns-prefetch" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://fonts.loli.net">
+<link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&family=Liu+Jian+Mao+Cao&family=ZCOOL+QingKe+HuangYou&family=Zhi+Mang+Xing&family=Long+Cang&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=Ma+Shan+Zheng&family=Liu+Jian+Mao+Cao&family=ZCOOL+QingKe+HuangYou&family=Zhi+Mang+Xing&family=Long+Cang&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{--bg:#f0f2f5;--card:#fff;--border:#e2e8f0;--text:#1a202c;--text2:#64748b;--accent:#2563eb;--accent-light:#dbeafe;--danger:#ef4444;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 8px 30px rgba(0,0,0,.12);--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+#loadingScreen{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#loadingScreen .spinner{width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loadingScreen p{margin-top:16px;color:var(--text2);font-size:14px}
+#app{display:none;flex:1;flex-direction:column;height:100vh}
+
+header{background:var(--card);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);z-index:10;flex-shrink:0;flex-wrap:wrap}
+.logo{font-size:18px;font-weight:700;color:var(--accent);white-space:nowrap}
+.tab-group{display:flex;gap:4px}
+.tab-group button{padding:6px 16px;border:1px solid var(--border);background:var(--card);border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);transition:all .2s}
+.tab-group button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-group button:hover:not(.active){background:var(--accent-light);color:var(--accent)}
+.header-sep{width:1px;height:24px;background:var(--border)}
+.header-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.header-actions button{padding:7px 14px;border:1px solid var(--border);background:var(--card);border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);transition:all .2s;font-weight:500}
+.header-actions button:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+.btn-primary:hover{background:#1d4ed8!important}
+.btn-danger{color:var(--danger)!important}
+.btn-danger:hover{border-color:var(--danger)!important}
+.btn-publish{background:#059669!important;color:#fff!important;border-color:#059669!important}
+.btn-publish:hover{background:#047857!important}
+
+main{flex:1;display:flex;overflow:hidden}
+.sidebar-left{width:260px;background:var(--card);border-right:1px solid var(--border);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.tool-section h3{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.tool-section input[type="text"],.tool-section textarea,.tool-section select{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:var(--card);transition:border-color .2s}
+.tool-section input:focus,.tool-section textarea:focus,.tool-section select:focus{outline:none;border-color:var(--accent)}
+.tool-section textarea{resize:vertical;min-height:50px}
+.tool-row{display:flex;gap:6px;align-items:center;margin-bottom:5px}
+.tool-row label{font-size:12px;color:var(--text2);min-width:32px;flex-shrink:0}
+.color-input-wrap{display:flex;align-items:center;gap:6px;flex:1}
+.color-input-wrap input[type="color"]{width:30px;height:26px;border:1px solid var(--border);border-radius:4px;cursor:pointer;padding:1px}
+.tool-btn{width:100%;padding:7px;border:1px solid var(--border);background:var(--card);border-radius:6px;cursor:pointer;font-size:13px;color:var(--text);transition:all .15s;font-weight:500;text-align:center}
+.tool-btn:hover{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+.tool-btn-sm{padding:4px 8px;font-size:12px;width:auto;display:inline-flex;align-items:center;justify-content:center;min-width:28px}
+.tool-btn-sm.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.color-swatches{display:flex;flex-wrap:wrap;gap:6px}
+.color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
+.color-swatch.is-white{border-color:#ddd}
+
+.font-select{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--card);cursor:pointer}
+
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.template-card{padding:8px 4px;border:1px solid var(--border);border-radius:6px;cursor:pointer;text-align:center;font-size:10px;color:var(--text2);transition:all .15s}
+.template-card:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.template-card .tp{font-size:16px;margin-bottom:2px;line-height:1.2}
+
+/* ---- Dual Canvas Area ---- */
+.canvas-area{flex:1;display:flex;align-items:center;justify-content:center;background:#e8eaed;padding:16px;overflow:auto;gap:18px}
+.canvas-col{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.col-label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:1px;transition:color .2s;user-select:none}
+.canvas-col.active .col-label{color:var(--accent)}
+.canvas-wrapper{position:relative;width:360px;height:480px;border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;flex-shrink:0;outline:3px solid transparent;outline-offset:2px;transition:outline-color .2s}
+.canvas-col.active .canvas-wrapper{outline-color:var(--accent)}
+.garment-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.garment-layer canvas{width:100%;height:100%;display:block}
+.canvas-wrapper .canvas-container{position:relative!important;z-index:1}
+
+.sidebar-right{width:190px;background:var(--card);border-left:1px solid var(--border);overflow-y:auto;padding:14px;flex-shrink:0}
+.sidebar-right h3{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.layer-list{display:flex;flex-direction:column;gap:3px}
+.layer-item{display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid transparent;border-radius:5px;cursor:pointer;font-size:12px;transition:all .12s}
+.layer-item:hover{background:#f8fafc}
+.layer-item.active{background:var(--accent-light);border-color:var(--accent)}
+.layer-item .li-icon{width:18px;text-align:center;opacity:.5;flex-shrink:0}
+.layer-item .li-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-item .li-del{width:20px;height:20px;border:none;background:none;cursor:pointer;font-size:10px;border-radius:4px;color:var(--text2);flex-shrink:0}
+.layer-item .li-del:hover{background:#fee2e2;color:var(--danger)}
+#selectionTools{display:none}
+input[type="range"]{width:100%;height:4px;-webkit-appearance:none;background:var(--border);border-radius:2px;outline:none}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:50%;cursor:pointer}
+
+#designView{display:flex;flex:1;overflow:hidden}
+#galleryView{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:24px 32px}
+.gallery-header{text-align:center;margin-bottom:24px}
+.gallery-header h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.gallery-header p{color:var(--text2);font-size:14px}
+.gallery-empty{text-align:center;padding:80px 20px;color:var(--text2)}
+.gallery-empty .ge-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.gallery-card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);transition:all .2s}
+.gallery-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.gallery-card img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:#f1f1f1;cursor:pointer}
+.gallery-card .gc-info{padding:10px 14px}
+.gallery-card .gc-title{font-size:14px;font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gallery-card .gc-meta{font-size:11px;color:var(--text2);display:flex;justify-content:space-between}
+.gc-actions{display:flex;gap:6px;margin-top:8px;align-items:center}
+.gc-vote{display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border:1px solid var(--border);border-radius:16px;background:var(--card);font-size:12px;cursor:pointer;color:var(--text2);transition:all .15s;font-family:inherit}
+.gc-vote:hover{border-color:var(--accent);color:var(--accent)}
+.gc-vote.want.active{background:#fef2f2;border-color:#ef4444;color:#ef4444}
+.gc-vote.unwant.active{background:#f5f5f5;border-color:#6b7280;color:#6b7280}
+.gc-del{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border:1px solid transparent;border-radius:50%;background:none;cursor:pointer;font-size:14px;color:var(--text2);transition:all .15s}
+.gc-del:hover{background:#fee2e2;color:var(--danger);border-color:#fecaca}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-card{background:var(--card);border-radius:16px;padding:28px;width:480px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-card h3{font-size:18px;font-weight:700;margin-bottom:16px;text-align:center}
+.modal-preview{width:100%;max-height:300px;background:#f1f1f1;border-radius:10px;overflow:hidden;margin-bottom:16px;display:flex;align-items:center;justify-content:center}
+.modal-preview img{max-width:100%;max-height:300px;object-fit:contain}
+.modal-form{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.modal-form input{padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit}
+.modal-form input:focus{outline:none;border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.modal-actions button{padding:9px 24px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;transition:all .15s;background:var(--card);font-family:inherit}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;cursor:pointer}
+.lightbox.show{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+@media(max-width:1100px){.sidebar-right{display:none}}
+@media(max-width:900px){.sidebar-left{width:220px}}
+@media(max-width:700px){main{flex-direction:column}.sidebar-left{width:100%;max-height:180px}.canvas-area{flex-direction:column}}
+
+/* ---- Local Font Faces ---- */
+@font-face{font-family:'Raleway Black';src:url('/fonts/Raleway-Black.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Raleway Light';src:url('/fonts/Raleway-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Exo2 Bold';src:url('/fonts/Exo2-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Exo2 ExtraLight';src:url('/fonts/Exo2-ExtraLight.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Akrobat Black';src:url('/fonts/Akrobat-Black.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Akrobat Light';src:url('/fonts/Akrobat-Light.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Comfortaa Bold';src:url('/fonts/Comfortaa-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Comfortaa Light';src:url('/fonts/Comfortaa-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Roboto Condensed Bold';src:url('/fonts/Roboto-BoldCondensed.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Roboto Light';src:url('/fonts/Roboto-Light.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Merriweather Bold';src:url('/fonts/Merriweather-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'YanoneKaffeesatz Bold';src:url('/fonts/YanoneKaffeesatz-Bold.otf') format('opentype');font-display:swap}
+@font-face{font-family:'Forum';src:url('/fonts/Forum-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'YesevaOne';src:url('/fonts/YesevaOne-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'KellySlab';src:url('/fonts/KellySlab-Regular.otf') format('opentype');font-display:swap}
+@font-face{font-family:'BadScript';src:url('/fonts/BadScript.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Eggboom';src:url('/fonts/Eggboom-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Cuprum Bold';src:url('/fonts/Cuprum-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'FiraMono Bold';src:url('/fonts/FiraMono-Bold.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'DidactGothic';src:url('/fonts/DidactGothic.ttf') format('truetype');font-display:swap}
+</style>
+</head>
+<body>
+<div id="loadingScreen"><div class="spinner"></div><p>AAA服装厂 加载中...</p></div>
+<div id="app">
+  <header>
+    <div class="logo">AAA服装厂</div>
+    <div class="tab-group" id="productTabs">
+      <button class="active" data-product="tee">短袖T恤</button>
+      <button data-product="hoodie">连帽卫衣</button>
+    </div>
+    <div class="header-sep"></div>
+    <div class="tab-group" id="viewTabs">
+      <button class="active" data-view="design">设计工坊</button>
+      <button data-view="gallery">展示区</button>
+    </div>
+    <div class="header-actions">
+      <button onclick="app.clearCanvas()" class="btn-danger">清空</button>
+      <button onclick="app.openPublish()" class="btn-publish">发布作品</button>
+      <button onclick="app.exportMockup()">导出效果图</button>
+      <button onclick="app.exportDesignOnly()" class="btn-primary">导出设计稿</button>
+    </div>
+  </header>
+  <main>
+    <div id="designView">
+      <div class="sidebar-left">
+        <div class="tool-section"><h3>衣服颜色</h3><div class="color-swatches" id="garmentColors"></div></div>
+        <div class="tool-section">
+          <h3>添加文字</h3>
+          <textarea id="textInput" placeholder="输入文字内容..." rows="2"></textarea>
+          <div class="tool-row" style="margin-top:6px"><label>字体</label>
+            <select id="fontSelect" class="font-select"></select>
+          </div>
+          <div class="tool-row"><label>大小</label>
+            <input type="range" id="fontSizeRange" min="12" max="120" value="36" style="flex:1">
+            <span id="fontSizeVal" style="font-size:12px;color:var(--text2);min-width:28px;text-align:right">36</span>
+          </div>
+          <div class="tool-row"><label>颜色</label>
+            <div class="color-input-wrap">
+              <input type="color" id="textColor" value="#1E293B">
+              <input type="text" id="textColorHex" value="#1E293B" maxlength="7" style="width:76px">
+            </div>
+          </div>
+          <div class="tool-row" style="gap:3px;margin-top:4px;flex-wrap:wrap">
+            <button class="tool-btn tool-btn-sm" id="btnBold" onclick="app.toggleStyle('bold')"><b>B</b></button>
+            <button class="tool-btn tool-btn-sm" id="btnItalic" onclick="app.toggleStyle('italic')"><i>I</i></button>
+            <button class="tool-btn tool-btn-sm" id="btnUnderline" onclick="app.toggleStyle('underline')"><u>U</u></button>
+            <span style="width:1px;height:20px;background:var(--border);margin:0 2px"></span>
+            <button class="tool-btn tool-btn-sm" id="btnAlignLeft" onclick="app.setTextAlign('left')" title="左对齐">
+              <svg width="14" height="14" viewBox="0 0 14 14"><line x1="1" y1="3" x2="13" y2="3" stroke="currentColor" stroke-width="1.8"/><line x1="1" y1="7" x2="9" y2="7" stroke="currentColor" stroke-width="1.8"/><line x1="1" y1="11" x2="11" y2="11" stroke="currentColor" stroke-width="1.8"/></svg>
+            </button>
+            <button class="tool-btn tool-btn-sm active" id="btnAlignCenter" onclick="app.setTextAlign('center')" title="居中">
+              <svg width="14" height="14" viewBox="0 0 14 14"><line x1="1" y1="3" x2="13" y2="3" stroke="currentColor" stroke-width="1.8"/><line x1="3" y1="7" x2="11" y2="7" stroke="currentColor" stroke-width="1.8"/><line x1="2" y1="11" x2="12" y2="11" stroke="currentColor" stroke-width="1.8"/></svg>
+            </button>
+            <button class="tool-btn tool-btn-sm" id="btnAlignRight" onclick="app.setTextAlign('right')" title="右对齐">
+              <svg width="14" height="14" viewBox="0 0 14 14"><line x1="1" y1="3" x2="13" y2="3" stroke="currentColor" stroke-width="1.8"/><line x1="5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.8"/><line x1="3" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="1.8"/></svg>
+            </button>
+          </div>
+          <button class="tool-btn" onclick="app.addText()" style="margin-top:4px">添加文字到画布</button>
+        </div>
+        <div class="tool-section">
+          <h3>上传图片</h3>
+          <input type="file" id="imageUpload" accept="image/*" style="display:none">
+          <button class="tool-btn" onclick="document.getElementById('imageUpload').click()">选择图片文件</button>
+          <p style="font-size:11px;color:var(--text2);margin-top:3px">支持 PNG/JPG/SVG，透明底最佳</p>
+        </div>
+        <div class="tool-section"><h3>快捷模板</h3><div class="template-grid" id="templateGrid"></div></div>
+        <div class="tool-section" id="selectionTools">
+          <h3>选中对象</h3>
+          <div class="tool-row"><label>透明</label>
+            <input type="range" id="opacityRange" min="0" max="100" value="100" style="flex:1">
+            <span id="opacityVal" style="font-size:12px;color:var(--text2);min-width:30px;text-align:right">100%</span>
+          </div>
+          <div style="display:flex;gap:4px">
+            <button class="tool-btn tool-btn-sm" onclick="app.bringForward()">上移层</button>
+            <button class="tool-btn tool-btn-sm" onclick="app.sendBackward()">下移层</button>
+          </div>
+          <button class="tool-btn" onclick="app.duplicateSelected()" style="margin-top:4px">复制对象</button>
+          <button class="tool-btn btn-danger" onclick="app.deleteSelected()" style="margin-top:4px">删除对象</button>
+        </div>
+      </div>
+
+      <!-- Dual Canvas -->
+      <div class="canvas-area">
+        <div class="canvas-col active" data-side="front">
+          <div class="col-label">正面</div>
+          <div class="canvas-wrapper" id="canvasWrapper-front">
+            <div class="garment-layer"><canvas id="garmentCanvas-front"></canvas></div>
+            <canvas id="designCanvas-front"></canvas>
+          </div>
+        </div>
+        <div class="canvas-col" data-side="back">
+          <div class="col-label">反面</div>
+          <div class="canvas-wrapper" id="canvasWrapper-back">
+            <div class="garment-layer"><canvas id="garmentCanvas-back"></canvas></div>
+            <canvas id="designCanvas-back"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-right"><h3>图层 (<span id="sideLabel">正面</span>)</h3><div class="layer-list" id="layerList"></div></div>
+    </div>
+
+    <div id="galleryView">
+      <div class="gallery-header"><h2>设计展示区</h2><p>来自全球设计师的创意灵感</p></div>
+      <div id="galleryContent"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Publish Modal -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal-card">
+    <h3>发布作品到展示区</h3>
+    <div class="modal-preview" id="publishPreview"></div>
+    <div class="modal-form">
+      <input id="pubTitle" type="text" placeholder="给作品起个名字...">
+      <input id="pubAuthor" type="text" placeholder="你的设计师名称...">
+    </div>
+    <div class="modal-actions">
+      <button onclick="app.cancelPublish()">取消</button>
+      <button onclick="app.confirmPublish()" class="btn-primary">发布</button>
+    </div>
+  </div>
+</div>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('show')"><img id="lightboxImg" src=""></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== CONSTANTS ====================
+const CANVAS_W = 360, CANVAS_H = 480, EXPORT_MULT = 3;
+const GARMENT_IMAGES = { tee: '/images/tee.jpg', hoodie: '/images/hoodie.jpg' };
+const PRINT_ZONES = {
+  tee:    { x:88,  y:104, w:184, h:208 },
+  hoodie: { x:80,  y:120, w:200, h:152 }
+};
+
+const GARMENT_COLORS = [
+  {name:'白色',hex:'#FFFFFF'},{name:'黑色',hex:'#2a2a2a'},{name:'烟灰',hex:'#7a7a7a'},
+  {name:'藏青',hex:'#2c3e6b'},{name:'红色',hex:'#c0392b'},{name:'酒红',hex:'#8b2252'},
+  {name:'军绿',hex:'#4a5e3a'},{name:'粉色',hex:'#e8a0b4'},{name:'杏色',hex:'#e8cdb0'},
+  {name:'紫色',hex:'#6c5b8a'},{name:'天蓝',hex:'#6ba3c9'},{name:'明黄',hex:'#f0c040'},
+];
+
+const FONTS = [
+  // ── 中文字体 ──
+  {name:'ZCOOL KuaiLe',label:'站酷快乐体',g:'中文'},
+  {name:'Ma Shan Zheng',label:'马善政楷书',g:'中文'},
+  {name:'Zhi Mang Xing',label:'芝忙行·狂草',g:'中文'},
+  {name:'Liu Jian Mao Cao',label:'流建毛草',g:'中文'},
+  {name:'Long Cang',label:'龙藏体',g:'中文'},
+  {name:'ZCOOL QingKe HuangYou',label:'庆科黄油体',g:'中文'},
+  {name:'ZCOOL XiaoWei',label:'站酷小薇体',g:'中文'},
+  {name:'Noto Sans SC',label:'思源黑体',g:'中文'},
+  {name:'Noto Serif SC',label:'思源宋体',g:'中文'},
+  // ── 潮流/现代 ──
+  {name:'Raleway Black',label:'Raleway 极粗',g:'潮流'},
+  {name:'Raleway Light',label:'Raleway 纤细',g:'潮流'},
+  {name:'Exo2 Bold',label:'Exo2 未来感',g:'潮流'},
+  {name:'Exo2 ExtraLight',label:'Exo2 极细',g:'潮流'},
+  {name:'Akrobat Black',label:'Akrobat 极黑',g:'潮流'},
+  {name:'Akrobat Light',label:'Akrobat 轻盈',g:'潮流'},
+  {name:'Comfortaa Bold',label:'Comfortaa 圆润粗',g:'潮流'},
+  {name:'Comfortaa Light',label:'Comfortaa 圆润细',g:'潮流'},
+  {name:'Roboto Condensed Bold',label:'Roboto 窄粗',g:'潮流'},
+  {name:'Roboto Light',label:'Roboto 细体',g:'潮流'},
+  {name:'DidactGothic',label:'Didact 人文',g:'潮流'},
+  // ── 经典/个性 ──
+  {name:'Merriweather Bold',label:'Merriweather 衬线',g:'经典'},
+  {name:'YanoneKaffeesatz Bold',label:'Kaffeesatz 窄体',g:'经典'},
+  {name:'Forum',label:'Forum 优雅',g:'经典'},
+  {name:'YesevaOne',label:'YesevaOne 花体',g:'经典'},
+  {name:'KellySlab',label:'KellySlab 板书',g:'经典'},
+  {name:'Cuprum Bold',label:'Cuprum 粗体',g:'经典'},
+  {name:'BadScript',label:'BadScript 手写',g:'经典'},
+  {name:'Eggboom',label:'Eggboom 气泡',g:'经典'},
+  {name:'FiraMono Bold',label:'FiraMono 等宽',g:'经典'},
+];
+
+const TEMPLATES = [
+  {text:'少年气',font:'ZCOOL KuaiLe',color:'#2563eb',size:48},
+  {text:'DREAM\nBIG',font:'Raleway Black',color:'#1E293B',size:52},
+  {text:'自由',font:'Zhi Mang Xing',color:'#dc2626',size:56},
+  {text:'VIBE',font:'Exo2 Bold',color:'#7c3aed',size:48},
+  {text:'世界和平',font:'Ma Shan Zheng',color:'#059669',size:40},
+  {text:'STAY\nWILD',font:'Akrobat Black',color:'#1E293B',size:46},
+  {text:'热爱生活',font:'Long Cang',color:'#ea580c',size:42},
+  {text:'CREATE',font:'Comfortaa Bold',color:'#2563eb',size:42},
+];
+
+// ==================== IMAGE CACHE & TINTING ====================
+const _imgCache = {};
+
+function preloadGarmentImages() {
+  return Promise.all(Object.entries(GARMENT_IMAGES).map(([k, url]) =>
+    new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => { _imgCache[k] = img; resolve(); };
+      img.onerror = resolve;
+      img.src = url;
+    })
+  ));
+}
+
+/**
+ * Tint garment area with PURE SOLID color.
+ * Background (light gray L≈195-215) stays untouched.
+ * Garment body (L>245) → pure flat target color, no luminance variation.
+ * Edges (L 230-245) → smooth blend from original to target.
+ */
+function tintCanvas(ctx, img, w, h, hex) {
+  ctx.drawImage(img, 0, 0, w, h);
+  if (hex === '#FFFFFF') return;
+
+  const id = ctx.getImageData(0, 0, w, h);
+  const d = id.data;
+  const cr = parseInt(hex.slice(1,3),16);
+  const cg = parseInt(hex.slice(3,5),16);
+  const cb = parseInt(hex.slice(5,7),16);
+
+  for (let i = 0; i < d.length; i += 4) {
+    const L = d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114;
+    if (L > 245) {
+      // Pure solid color — completely flat, no shading
+      d[i]   = cr;
+      d[i+1] = cg;
+      d[i+2] = cb;
+    } else if (L > 230) {
+      // Smooth transition from original pixel to pure target color
+      const t = (L - 230) / 15;
+      d[i]   = (d[i]*(1-t) + cr*t)|0;
+      d[i+1] = (d[i+1]*(1-t) + cg*t)|0;
+      d[i+2] = (d[i+2]*(1-t) + cb*t)|0;
+    }
+  }
+  ctx.putImageData(id, 0, 0);
+}
+
+// ==================== HELPERS ====================
+function timeAgo(ts) {
+  const d = Date.now()/1000 - ts;
+  if(d<60) return '刚刚';
+  if(d<3600) return Math.floor(d/60)+'分钟前';
+  if(d<86400) return Math.floor(d/3600)+'小时前';
+  if(d<604800) return Math.floor(d/86400)+'天前';
+  return new Date(ts*1000).toLocaleDateString('zh-CN');
+}
+
+// ==================== APP ====================
+class DesignApp {
+  constructor() {
+    this._activeSide = 'front';
+    this._sides = {};            // { front: { fc, pzRect, designs:{} }, back: { ... } }
+    this.currentProduct = 'tee';
+    this.currentColorIdx = 0;
+    this._styleState = { bold:false, italic:false, underline:false };
+    this._currentAlign = 'center';
+    this._publishDataUrl = null;
+
+    // User identity
+    this._uid = localStorage.getItem('aaa_uid');
+    if (!this._uid) { this._uid = 'u_' + Math.random().toString(36).slice(2,10); localStorage.setItem('aaa_uid', this._uid); }
+    this._isAdmin = new URLSearchParams(location.search).has('admin');
+
+    // Restore saved author name
+    const sa = localStorage.getItem('aaa_author');
+    if (sa) setTimeout(() => { const el = document.getElementById('pubAuthor'); if(el) el.value = sa; }, 0);
+  }
+
+  get canvas() { return this._sides[this._activeSide]?.fc; }
+  get printZoneRect() { return this._sides[this._activeSide]?.pzRect; }
+  get printZone() { return PRINT_ZONES[this.currentProduct]; }
+  get garmentColor() { return GARMENT_COLORS[this.currentColorIdx]; }
+
+  init() {
+    const pz = this.printZone;
+    ['front', 'back'].forEach(side => {
+      const fc = new fabric.Canvas('designCanvas-' + side, {
+        width: CANVAS_W, height: CANVAS_H,
+        backgroundColor: 'transparent',
+        selection: true, preserveObjectStacking: true,
+      });
+      const pzRect = new fabric.Rect({
+        left:pz.x, top:pz.y, width:pz.w, height:pz.h,
+        fill:'transparent', stroke:'rgba(37,99,235,0.3)',
+        strokeWidth:1.5, strokeDashArray:[6,4],
+        selectable:false, evented:false, excludeFromExport:true,
+      });
+      fc.add(pzRect);
+
+      // Mouse down → switch active side
+      fc.on('mouse:down', () => {
+        if (this._activeSide !== side) this.setActiveSide(side);
+      });
+      fc.on('selection:created', () => this.onSelect());
+      fc.on('selection:updated', () => this.onSelect());
+      fc.on('selection:cleared', () => { document.getElementById('selectionTools').style.display = 'none'; });
+      fc.on('object:modified', () => this.updateLayers());
+
+      this._sides[side] = { fc, pzRect, designs: {} };
+    });
+
+    this.renderGarment();
+    this.setupUI();
+    this.updateLayers();
+  }
+
+  // ---- Active side ----
+  setActiveSide(side) {
+    if (this._activeSide === side) return;
+    // Deselect on current canvas
+    const cur = this._sides[this._activeSide];
+    if (cur) { cur.fc.discardActiveObject(); cur.fc.renderAll(); }
+    this._activeSide = side;
+    document.querySelectorAll('.canvas-col').forEach(el => el.classList.toggle('active', el.dataset.side === side));
+    document.getElementById('sideLabel').textContent = side === 'front' ? '正面' : '反面';
+    document.getElementById('selectionTools').style.display = 'none';
+    this.updateLayers();
+  }
+
+  // ---- Garment rendering ----
+  renderGarment() {
+    const pz = this.printZone;
+    ['front', 'back'].forEach(side => {
+      const gc = document.getElementById('garmentCanvas-' + side);
+      gc.width = CANVAS_W;
+      gc.height = CANVAS_H;
+      const ctx = gc.getContext('2d');
+      const img = _imgCache[this.currentProduct];
+      if (img) tintCanvas(ctx, img, CANVAS_W, CANVAS_H, this.garmentColor.hex);
+      const s = this._sides[side];
+      if (s) {
+        s.pzRect.set({ left:pz.x, top:pz.y, width:pz.w, height:pz.h });
+        s.fc.renderAll();
+      }
+    });
+  }
+
+  setGarmentColor(idx) {
+    this.currentColorIdx = idx;
+    this.renderGarment();
+    document.querySelectorAll('.color-swatch').forEach((s,i) => s.classList.toggle('active', i===idx));
+  }
+
+  switchProduct(p) {
+    if (p === this.currentProduct) return;
+    this.saveAllDesigns();
+    this.currentProduct = p;
+    this.loadAllDesigns();
+    this.renderGarment();
+    document.querySelectorAll('#productTabs button').forEach(b => b.classList.toggle('active', b.dataset.product===p));
+    this.updateLayers();
+  }
+
+  saveAllDesigns() {
+    ['front', 'back'].forEach(side => {
+      const s = this._sides[side];
+      const objs = s.fc.getObjects().filter(o => o !== s.pzRect);
+      if (objs.length) s.designs[this.currentProduct] = JSON.stringify(objs.map(o => o.toJSON(['excludeFromExport'])));
+      else delete s.designs[this.currentProduct];
+    });
+  }
+
+  loadAllDesigns() {
+    ['front', 'back'].forEach(side => {
+      const s = this._sides[side];
+      s.fc.getObjects().filter(o => o !== s.pzRect).forEach(o => s.fc.remove(o));
+      const d = s.designs[this.currentProduct];
+      if (d) fabric.util.enlivenObjects(JSON.parse(d), objs => { objs.forEach(o => s.fc.add(o)); s.fc.renderAll(); });
+      s.fc.renderAll();
+    });
+    this.updateLayers();
+  }
+
+  // ---- UI setup ----
+  setupUI() {
+    // Product tabs
+    document.querySelectorAll('#productTabs button').forEach(b => b.addEventListener('click', () => this.switchProduct(b.dataset.product)));
+    // View tabs
+    document.querySelectorAll('#viewTabs button').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#viewTabs button').forEach(t => t.classList.remove('active'));
+      b.classList.add('active');
+      b.dataset.view === 'gallery' ? this.showGallery() : this.showDesign();
+    }));
+    // Canvas column clicks (also handled by fabric mouse:down, but this covers label clicks)
+    document.querySelectorAll('.canvas-col').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (!e.target.closest('.canvas-container')) this.setActiveSide(el.dataset.side);
+      });
+    });
+    // Garment colors
+    const cw = document.getElementById('garmentColors');
+    GARMENT_COLORS.forEach((c,i) => {
+      const s = document.createElement('div');
+      s.className = 'color-swatch'+(i===0?' active':'')+(c.hex==='#FFFFFF'?' is-white':'');
+      s.style.backgroundColor = c.hex;
+      s.title = c.name;
+      s.addEventListener('click', () => this.setGarmentColor(i));
+      cw.appendChild(s);
+    });
+    // Font select
+    const sel = document.getElementById('fontSelect');
+    let curGroup = '';
+    FONTS.forEach((f,i) => {
+      if (f.g !== curGroup) {
+        curGroup = f.g;
+        const og = document.createElement('optgroup');
+        og.label = curGroup === '中文' ? '── 中文字体 ──' : curGroup === '潮流' ? '── 潮流/现代 ──' : '── 经典/个性 ──';
+        sel.appendChild(og);
+      }
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = f.label;
+      sel.lastChild.appendChild(opt);
+    });
+    sel.addEventListener('change', () => {
+      const f = FONTS[+sel.value];
+      const a = this.canvas.getActiveObject();
+      if (a && a.type==='i-text') { a.set('fontFamily', f.name); this.canvas.renderAll(); }
+    });
+    // Font size
+    const sr = document.getElementById('fontSizeRange'), sv = document.getElementById('fontSizeVal');
+    sr.addEventListener('input', () => {
+      sv.textContent = sr.value;
+      const a = this.canvas.getActiveObject();
+      if (a && a.type==='i-text') { a.set('fontSize', +sr.value); this.canvas.renderAll(); }
+    });
+    // Text color
+    const cp = document.getElementById('textColor'), ch = document.getElementById('textColorHex');
+    cp.addEventListener('input', () => {
+      ch.value = cp.value;
+      const a = this.canvas.getActiveObject();
+      if (a && a.type==='i-text') { a.set('fill', cp.value); this.canvas.renderAll(); }
+    });
+    ch.addEventListener('change', () => {
+      if (!/^#[0-9a-f]{6}$/i.test(ch.value)) return;
+      cp.value = ch.value;
+      const a = this.canvas.getActiveObject();
+      if (a && a.type==='i-text') { a.set('fill', ch.value); this.canvas.renderAll(); }
+    });
+    // Opacity
+    const or_ = document.getElementById('opacityRange'), ov = document.getElementById('opacityVal');
+    or_.addEventListener('input', () => {
+      ov.textContent = or_.value+'%';
+      const a = this.canvas.getActiveObject();
+      if (a) { a.set('opacity', +or_.value/100); this.canvas.renderAll(); }
+    });
+    // Image upload
+    document.getElementById('imageUpload').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        fabric.Image.fromURL(ev.target.result, img => {
+          const pz = this.printZone;
+          const sc = Math.min(pz.w/img.width, pz.h/img.height, 1)*0.8;
+          img.set({ left:pz.x+pz.w/2, top:pz.y+pz.h/2, originX:'center', originY:'center', scaleX:sc, scaleY:sc });
+          this.canvas.add(img); this.canvas.setActiveObject(img); this.canvas.renderAll(); this.updateLayers();
+          this.toast('图片已添加到' + (this._activeSide==='front'?'正面':'反面'));
+        });
+      };
+      reader.readAsDataURL(file); e.target.value='';
+    });
+    // Selection events already bound per-canvas in init()
+    // Templates
+    this.buildTemplates();
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+      if ((e.key==='Delete'||e.key==='Backspace') && this.canvas.getActiveObject()) { this.deleteSelected(); e.preventDefault(); }
+      if (e.key==='d' && (e.metaKey||e.ctrlKey)) { this.duplicateSelected(); e.preventDefault(); }
+    });
+  }
+
+  onSelect() {
+    const obj = this.canvas.getActiveObject();
+    if (!obj || obj===this.printZoneRect) return;
+    document.getElementById('selectionTools').style.display = 'block';
+    document.getElementById('opacityRange').value = Math.round((obj.opacity||1)*100);
+    document.getElementById('opacityVal').textContent = Math.round((obj.opacity||1)*100)+'%';
+    if (obj.type==='i-text') {
+      document.getElementById('fontSizeRange').value = obj.fontSize||36;
+      document.getElementById('fontSizeVal').textContent = obj.fontSize||36;
+      document.getElementById('textColor').value = obj.fill||'#1E293B';
+      document.getElementById('textColorHex').value = obj.fill||'#1E293B';
+      this.updateAlignUI(obj.textAlign||'center');
+    }
+  }
+
+  buildTemplates() {
+    const g = document.getElementById('templateGrid');
+    TEMPLATES.forEach(t => {
+      const c = document.createElement('div'); c.className='template-card';
+      c.innerHTML = '<div class="tp" style="font-family:\''+t.font+'\';color:'+t.color+'">'+t.text.split('\n')[0]+'</div><div>'+t.text.replace('\n',' ')+'</div>';
+      c.addEventListener('click', () => this.applyTemplate(t));
+      g.appendChild(c);
+    });
+  }
+
+  applyTemplate(t) {
+    const pz = this.printZone;
+    const txt = new fabric.IText(t.text, {
+      left:pz.x+pz.w/2, top:pz.y+pz.h/2, originX:'center', originY:'center',
+      fontFamily:t.font, fontSize:t.size||36, fill:t.color||'#1E293B', textAlign:'center',
+    });
+    this.canvas.add(txt); this.canvas.setActiveObject(txt); this.canvas.renderAll(); this.updateLayers();
+    this.toast('模板已应用到' + (this._activeSide==='front'?'正面':'反面'));
+  }
+
+  // ---- Text ----
+  addText() {
+    const raw = document.getElementById('textInput').value.trim();
+    if (!raw) { this.toast('请先输入文字'); return; }
+    const pz = this.printZone;
+    const f = FONTS[+document.getElementById('fontSelect').value];
+    const txt = new fabric.IText(raw, {
+      left:pz.x+pz.w/2, top:pz.y+pz.h/2, originX:'center', originY:'center',
+      fontFamily: f.name,
+      fontSize: +document.getElementById('fontSizeRange').value,
+      fill: document.getElementById('textColor').value,
+      fontWeight: this._styleState.bold ? 'bold' : 'normal',
+      fontStyle: this._styleState.italic ? 'italic' : 'normal',
+      underline: this._styleState.underline,
+      textAlign: this._currentAlign,
+    });
+    this.canvas.add(txt); this.canvas.setActiveObject(txt); this.canvas.renderAll(); this.updateLayers();
+    document.getElementById('textInput').value = '';
+    this.toast('文字已添加到' + (this._activeSide==='front'?'正面':'反面'));
+  }
+
+  toggleStyle(s) {
+    this._styleState[s] = !this._styleState[s];
+    document.getElementById('btn'+s.charAt(0).toUpperCase()+s.slice(1)).classList.toggle('active', this._styleState[s]);
+    const a = this.canvas.getActiveObject();
+    if (a && a.type==='i-text') {
+      if (s==='bold') a.set('fontWeight', this._styleState.bold?'bold':'normal');
+      if (s==='italic') a.set('fontStyle', this._styleState.italic?'italic':'normal');
+      if (s==='underline') a.set('underline', this._styleState.underline);
+      this.canvas.renderAll();
+    }
+  }
+
+  setTextAlign(align) {
+    this._currentAlign = align;
+    this.updateAlignUI(align);
+    const a = this.canvas.getActiveObject();
+    if (a && a.type==='i-text') { a.set('textAlign', align); this.canvas.renderAll(); }
+  }
+
+  updateAlignUI(align) {
+    document.getElementById('btnAlignLeft').classList.toggle('active', align==='left');
+    document.getElementById('btnAlignCenter').classList.toggle('active', align==='center');
+    document.getElementById('btnAlignRight').classList.toggle('active', align==='right');
+  }
+
+  // ---- Object ops ----
+  deleteSelected() {
+    const a = this.canvas.getActiveObject();
+    if(a && a!==this.printZoneRect) { this.canvas.remove(a); this.canvas.discardActiveObject(); this.canvas.renderAll(); this.updateLayers(); }
+  }
+  duplicateSelected() {
+    const a = this.canvas.getActiveObject();
+    if(!a || a===this.printZoneRect) return;
+    a.clone(c => { c.set({left:c.left+15,top:c.top+15}); this.canvas.add(c); this.canvas.setActiveObject(c); this.canvas.renderAll(); this.updateLayers(); });
+  }
+  bringForward() {
+    const a = this.canvas.getActiveObject();
+    if(a && a!==this.printZoneRect) { this.canvas.bringForward(a); this.canvas.renderAll(); this.updateLayers(); }
+  }
+  sendBackward() {
+    const a = this.canvas.getActiveObject();
+    if(a && a!==this.printZoneRect) { this.canvas.sendBackwards(a); this.canvas.sendToBack(this.printZoneRect); this.canvas.renderAll(); this.updateLayers(); }
+  }
+  clearCanvas() {
+    const side = this._activeSide === 'front' ? '正面' : '反面';
+    if(!confirm('确定清空' + side + '画布？')) return;
+    this.canvas.getObjects().filter(o => o!==this.printZoneRect).forEach(o => this.canvas.remove(o));
+    this.canvas.discardActiveObject(); this.canvas.renderAll(); this.updateLayers();
+    this.toast(side + '画布已清空');
+  }
+
+  // ---- Layers ----
+  updateLayers() {
+    const list = document.getElementById('layerList');
+    const objs = this.canvas.getObjects().filter(o => o!==this.printZoneRect);
+    if (!objs.length) {
+      list.innerHTML = '<div style="font-size:12px;color:var(--text2);text-align:center;padding:20px">暂无图层<br>添加文字或图片开始设计</div>';
+      return;
+    }
+    list.innerHTML = '';
+    [...objs].reverse().forEach((obj,i) => {
+      const item = document.createElement('div');
+      item.className = 'layer-item' + (this.canvas.getActiveObject()===obj ? ' active' : '');
+      const icon = obj.type==='i-text' ? 'T' : '&#128444;';
+      const name = obj.type==='i-text' ? (obj.text||'').substring(0,10) : '图片';
+      const ri = objs.length - 1 - i;
+      item.innerHTML = '<span class="li-icon">'+icon+'</span><span class="li-name">'+name+'</span><button class="li-del" onclick="app.removeLayerObj('+ri+')">&#10005;</button>';
+      item.addEventListener('click', e => { if(e.target.tagName==='BUTTON') return; this.canvas.setActiveObject(obj); this.canvas.renderAll(); this.updateLayers(); });
+      list.appendChild(item);
+    });
+  }
+  removeLayerObj(idx) {
+    const objs = this.canvas.getObjects().filter(o => o!==this.printZoneRect);
+    if(objs[idx]) { this.canvas.remove(objs[idx]); this.canvas.discardActiveObject(); this.canvas.renderAll(); this.updateLayers(); }
+  }
+
+  // ---- Views ----
+  showDesign() { document.getElementById('designView').style.display='flex'; document.getElementById('galleryView').style.display='none'; }
+  showGallery() { document.getElementById('designView').style.display='none'; document.getElementById('galleryView').style.display='flex'; this.loadGallery(); }
+
+  // ---- Gallery ----
+  _escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  async loadGallery() {
+    const c = document.getElementById('galleryContent');
+    c.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">加载中...</div>';
+    try {
+      const res = await fetch('/api/gallery');
+      const items = await res.json();
+      if (!items.length) {
+        c.innerHTML = '<div class="gallery-empty"><div class="ge-icon">&#127912;</div><p>还没有作品，成为第一个发布设计的人吧！</p></div>';
+        return;
+      }
+      let h = '<div class="gallery-grid">';
+      items.forEach(item => {
+        const canDelete = this._isAdmin || (item.uid && item.uid === this._uid);
+        const wants = item.wants || [];
+        const unwants = item.unwants || [];
+        const userWanted = wants.includes(this._uid);
+        const userUnwanted = unwants.includes(this._uid);
+        h += '<div class="gallery-card">';
+        h += '<img src="'+item.imageUrl+'" loading="lazy" onclick="document.getElementById(\'lightboxImg\').src=\''+item.imageUrl+'\';document.getElementById(\'lightbox\').classList.add(\'show\')">';
+        h += '<div class="gc-info">';
+        h += '<div class="gc-title">' + this._escHtml(item.title) + '</div>';
+        h += '<div class="gc-meta"><span>' + this._escHtml(item.author) + '</span><span>' + timeAgo(item.timestamp) + '</span></div>';
+        h += '<div class="gc-actions">';
+        h += '<button class="gc-vote want' + (userWanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'want\',this)">&#9829; 想要 <span>' + wants.length + '</span></button>';
+        h += '<button class="gc-vote unwant' + (userUnwanted?' active':'') + '" onclick="event.stopPropagation();app.vote(\'' + item.id + '\',\'unwant\',this)">&#10007; 不想要 <span>' + unwants.length + '</span></button>';
+        if (canDelete) {
+          h += '<button class="gc-del" onclick="event.stopPropagation();app.deleteWork(\'' + item.id + '\')" title="删除">&#128465;</button>';
+        }
+        h += '</div></div></div>';
+      });
+      h += '</div>';
+      c.innerHTML = h;
+    } catch(e) {
+      c.innerHTML = '<div class="gallery-empty"><p>加载失败，请稍后重试</p></div>';
+    }
+  }
+
+  async vote(id, voteType, btn) {
+    // Optimistic UI update — instant response, no full reload
+    const actions = btn.closest('.gc-actions');
+    const wantBtn = actions.querySelector('.gc-vote.want');
+    const unwantBtn = actions.querySelector('.gc-vote.unwant');
+    const wantSpan = wantBtn.querySelector('span');
+    const unwantSpan = unwantBtn.querySelector('span');
+
+    const wasWant = wantBtn.classList.contains('active');
+    const wasUnwant = unwantBtn.classList.contains('active');
+
+    // Mirror server toggle logic locally
+    if (voteType === 'want') {
+      if (wasWant) {
+        wantBtn.classList.remove('active');
+        wantSpan.textContent = Math.max(0, +wantSpan.textContent - 1);
+      } else {
+        wantBtn.classList.add('active');
+        wantSpan.textContent = +wantSpan.textContent + 1;
+        if (wasUnwant) {
+          unwantBtn.classList.remove('active');
+          unwantSpan.textContent = Math.max(0, +unwantSpan.textContent - 1);
+        }
+      }
+    } else {
+      if (wasUnwant) {
+        unwantBtn.classList.remove('active');
+        unwantSpan.textContent = Math.max(0, +unwantSpan.textContent - 1);
+      } else {
+        unwantBtn.classList.add('active');
+        unwantSpan.textContent = +unwantSpan.textContent + 1;
+        if (wasWant) {
+          wantBtn.classList.remove('active');
+          wantSpan.textContent = Math.max(0, +wantSpan.textContent - 1);
+        }
+      }
+    }
+
+    // Send to server in background, sync real counts
+    try {
+      const res = await fetch('/api/vote', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ id, uid: this._uid, vote: voteType })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        // Sync with real cumulative server counts
+        wantSpan.textContent = data.wants;
+        unwantSpan.textContent = data.unwants;
+      }
+    } catch(e) { /* optimistic update stays, will sync on next gallery load */ }
+  }
+
+  async deleteWork(id) {
+    if (!confirm('确定删除这件作品？')) return;
+    try {
+      const res = await fetch('/api/delete', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ id, uid: this._uid, admin: this._isAdmin })
+      });
+      const data = await res.json();
+      if (data.ok) { this.toast('作品已删除'); this.loadGallery(); }
+      else this.toast(data.error || '删除失败');
+    } catch(e) { this.toast('网络错误'); }
+  }
+
+  // ---- Publish ----
+  openPublish() {
+    // Check if any side has designs
+    const frontObjs = this._sides.front.fc.getObjects().filter(o => o !== this._sides.front.pzRect);
+    const backObjs = this._sides.back.fc.getObjects().filter(o => o !== this._sides.back.pzRect);
+    if (!frontObjs.length && !backObjs.length) { this.toast('画布上还没有设计内容'); return; }
+    this.generateMockupDataURL(url => {
+      this._publishDataUrl = url;
+      document.getElementById('publishPreview').innerHTML = '<img src="'+url+'">';
+      document.getElementById('publishModal').classList.add('show');
+    });
+  }
+  cancelPublish() { document.getElementById('publishModal').classList.remove('show'); this._publishDataUrl=null; }
+
+  async confirmPublish() {
+    const title = document.getElementById('pubTitle').value.trim()||'未命名设计';
+    const author = document.getElementById('pubAuthor').value.trim()||'匿名设计师';
+    if (!this._publishDataUrl) return;
+    localStorage.setItem('aaa_author', author);
+    try {
+      const res = await fetch('/api/publish', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ image:this._publishDataUrl, title, author, uid:this._uid, product:this.currentProduct, color:this.garmentColor.hex })
+      });
+      const data = await res.json();
+      if (data.ok) { this.toast('作品发布成功！'); this.cancelPublish(); document.getElementById('pubTitle').value=''; }
+      else this.toast('发布失败');
+    } catch(e) { this.toast('网络错误，请重试'); }
+  }
+
+  // ---- Mockup generation (combines front + back) ----
+  _renderSideMockup(side) {
+    const m = 2;
+    const w = CANVAS_W * m, h = CANVAS_H * m;
+    const off = document.createElement('canvas');
+    off.width = w; off.height = h;
+    const ctx = off.getContext('2d');
+    const img = _imgCache[this.currentProduct];
+    if (img) tintCanvas(ctx, img, w, h, this.garmentColor.hex);
+
+    const s = this._sides[side];
+    s.pzRect.set({visible:false}); s.fc.renderAll();
+    const dUrl = s.fc.toDataURL({format:'png', multiplier:m});
+    s.pzRect.set({visible:true}); s.fc.renderAll();
+
+    return new Promise(resolve => {
+      const dImg = new Image();
+      dImg.onload = () => {
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.drawImage(dImg, 0, 0, w, h);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.55;
+        ctx.drawImage(dImg, 0, 0, w, h);
+        ctx.globalAlpha = 1;
+        resolve(off);
+      };
+      dImg.src = dUrl;
+    });
+  }
+
+  generateMockupDataURL(cb) {
+    Promise.all([
+      this._renderSideMockup('front'),
+      this._renderSideMockup('back')
+    ]).then(([frontOff, backOff]) => {
+      const m = 2;
+      const w = CANVAS_W * m, h = CANVAS_H * m;
+      const gap = 30 * m;
+      const combined = document.createElement('canvas');
+      combined.width = w * 2 + gap;
+      combined.height = h;
+      const ctx = combined.getContext('2d');
+      ctx.fillStyle = '#f0f2f5';
+      ctx.fillRect(0, 0, combined.width, combined.height);
+      ctx.drawImage(frontOff, 0, 0);
+      ctx.drawImage(backOff, w + gap, 0);
+
+      // Labels
+      ctx.font = 'bold ' + (14*m) + 'px "Noto Sans SC", sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.textAlign = 'center';
+      ctx.fillText('正面', w/2, h - 12*m);
+      ctx.fillText('反面', w + gap + w/2, h - 12*m);
+
+      cb(combined.toDataURL('image/png'));
+    });
+  }
+
+  // ---- Export ----
+  exportMockup() {
+    this.generateMockupDataURL(url => {
+      const l = document.createElement('a');
+      l.download = 'AAA服装厂-'+(this.currentProduct==='tee'?'T恤':'卫衣')+'-效果图.png';
+      l.href = url; document.body.appendChild(l); l.click(); document.body.removeChild(l);
+      this.toast('效果图已导出（正面+反面）');
+    });
+  }
+
+  exportDesignOnly() {
+    const side = this._activeSide === 'front' ? '正面' : '反面';
+    this.printZoneRect.set({visible:false}); this.canvas.renderAll();
+    const url = this.canvas.toDataURL({format:'png', multiplier:EXPORT_MULT});
+    const l = document.createElement('a');
+    l.download = 'AAA服装厂-设计稿-'+side+'.png'; l.href = url;
+    document.body.appendChild(l); l.click(); document.body.removeChild(l);
+    this.printZoneRect.set({visible:true}); this.canvas.renderAll();
+    this.toast(side + '设计稿已导出');
+  }
+
+  toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(this._tt);
+    this._tt = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+}
+
+// ==================== BOOT ====================
+let app;
+function showApp() {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  app = new DesignApp();
+  app.init();
+}
+
+(function boot() {
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/fabric@5.3.1/dist/fabric.min.js',
+    'https://cdn.bootcdn.net/ajax/libs/fabric.js/5.3.1/fabric.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js',
+    'https://unpkg.com/fabric@5.3.1/dist/fabric.min.js',
+  ];
+  let i = 0;
+  function tryNext() {
+    if (i >= cdns.length) {
+      document.getElementById('loadingScreen').innerHTML = '<p style="color:#ef4444;font-size:16px">加载失败，请刷新页面重试</p>';
+      return;
+    }
+    const s = document.createElement('script'); s.src = cdns[i++];
+    s.onload = () => {
+      preloadGarmentImages().then(() => {
+        Promise.race([
+          document.fonts ? document.fonts.ready : Promise.resolve(),
+          new Promise(r => setTimeout(r, 1500))
+        ]).then(showApp);
+      });
+    };
+    s.onerror = tryNext;
+    document.head.appendChild(s);
+  }
+  tryNext();
+})();
+</script>
+</body>
+</html>
