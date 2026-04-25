@@ -1240,12 +1240,7 @@ class DesignApp {
     return new Promise(resolve => {
       const dImg = new Image();
       dImg.onload = () => {
-        ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(dImg, 0, 0, w, h);
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.globalAlpha = 0.55;
-        ctx.drawImage(dImg, 0, 0, w, h);
-        ctx.globalAlpha = 1;
         resolve(off);
       };
       dImg.src = dUrl;
