@@ -717,7 +717,12 @@ class DesignApp {
     sel.addEventListener('change', () => {
       const f = FONTS[+sel.value];
       const a = this.canvas.getActiveObject();
-      if (a && a.type==='i-text') { a.set('fontFamily', f.name); this.canvas.renderAll(); }
+      if (a && a.type==='i-text') {
+        if (a.isEditing) a.exitEditing();
+        a.set('fontFamily', f.name);
+        this.canvas.renderAll();
+        a.enterEditing(); a.selectAll();
+      }
     });
     // Font size
     const sr = document.getElementById('fontSizeRange'), sv = document.getElementById('fontSizeVal');
