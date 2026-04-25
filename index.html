@@ -478,7 +478,12 @@ function preloadGarmentImages() {
  * Background (light, L>220) stays untouched. Edge zone blends smoothly.
  */
 function tintCanvas(ctx, img, w, h, hex) {
-  ctx.drawImage(img, 0, 0, w, h);
+  ctx.clearRect(0, 0, w, h);
+  // Draw image preserving aspect ratio, centered
+  const scale = Math.min(w / img.naturalWidth, h / img.naturalHeight);
+  const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
+  const dx = (w - dw) / 2, dy = (h - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
   // For black garment, #2a2a2a is "natural" — skip tinting
   if (hex === '#2a2a2a') return;
   const id = ctx.getImageData(0, 0, w, h);
