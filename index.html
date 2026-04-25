@@ -494,17 +494,26 @@ function tintCanvas(ctx, img, w, h, hex) {
       // Garment body: apply target color, scale by luminance ratio to keep texture
       // L/40 gives subtle shading (original L~23 → ratio ~0.58, keeps depth)
       const shade = Math.min(L / 50, 1.0);
-      d[i]   = (cr * shade)|0;
-      d[i+1] = (cg * shade)|0;
-      d[i+2] = (cb * shade)|0;
-      // For white: make it truly white
-      if (hex === '#FFFFFF') { d[i] = d[i+1] = d[i+2] = Math.max(200, (L/80*255)|0); }
+      if (hex === '#FFFFFF') {
+        // White: map dark garment pixels to bright white, keep subtle texture
+        const wv = 235 + (L / 80) * 20; // 235~255 range
+        d[i] = d[i+1] = d[i+2] = Math.min(255, wv)|0;
+      } else {
+        d[i]   = (cr * shade)|0;
+        d[i+1] = (cg * shade)|0;
+        d[i+2] = (cb * shade)|0;
+      }
     } else if (L < 120) {
       // Edge transition zone: blend from tinted to original
       const t = (L - 80) / 40; // 0=garment, 1=near-bg
       const shade = Math.min(L / 50, 1.0);
-      let tr = (cr * shade)|0, tg = (cg * shade)|0, tb = (cb * shade)|0;
-      if (hex === '#FFFFFF') { tr = tg = tb = Math.max(200, (L/80*255)|0); }
+      let tr, tg, tb;
+      if (hex === '#FFFFFF') {
+        const wv = 235 + (L / 80) * 20;
+        tr = tg = tb = Math.min(255, wv)|0;
+      } else {
+        tr = (cr * shade)|0; tg = (cg * shade)|0; tb = (cb * shade)|0;
+      }
       d[i]   = (tr*(1-t) + d[i]*t)|0;
       d[i+1] = (tg*(1-t) + d[i+1]*t)|0;
       d[i+2] = (tb*(1-t) + d[i+2]*t)|0;
